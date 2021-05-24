@@ -31,6 +31,11 @@ struct ContentView: View {
             }
             .navigationBarTitle(rootWord)
             .onAppear(perform: startGame)
+            .navigationBarItems(trailing:
+                Button(action: startGame) {
+                    Text("New Word")
+                }
+            )
             .alert(isPresented: $showingError) {
                 Alert(title: Text(errorTitle), message: Text(errorMessage), dismissButton: .default(Text("OK")))
             }
@@ -69,6 +74,8 @@ struct ContentView: View {
                 let allWords = startWords.components(separatedBy: "\n")
 
                 rootWord = allWords.randomElement() ?? "silkworm"
+                usedWords = [String] ()
+                newWord = ""
 
                 return
             }
@@ -100,6 +107,10 @@ struct ContentView: View {
         let range = NSRange(location: 0, length: word.utf16.count)
         let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
 
+        if word.count < 3 {
+            return false
+        }
+        
         return misspelledRange.location == NSNotFound
     }
     
